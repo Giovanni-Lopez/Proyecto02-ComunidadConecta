@@ -1,0 +1,282 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Comunidad Conecta - Gestión de Solicitudes</title>
+    <style type="text/css">
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 15px; }
+        .top-bar { background: #1e3a8a; color: white; padding: 12px 20px; border-radius: 6px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .stat-card { text-align: center; padding: 10px; border-radius: 5px; background: #ffffff; border: 1px solid #d1d5db; }
+    </style>
+</h:head>
+<h:body>
+    <h:form id="formPrincipal">
+        <p:growl id="mensajes" showDetail="true" life="4000" />
+
+        <!-- Barra superior con sesión activa -->
+        <div class="top-bar">
+            <div>
+                <strong>Comunidad Conecta</strong> |
+                <h:outputText value="Bienvenido(a): #{loginBean.usuarioAutenticado != null ? loginBean.usuarioAutenticado.nombre : 'Invitado'} (#{loginBean.usuarioAutenticado != null ? loginBean.usuarioAutenticado.rol : 'Modo Directo'})" />
+            </div>
+            <p:commandButton value="Cerrar Sesión" icon="pi pi-sign-out"
+                             action="#{loginBean.cerrarSesion()}" styleClass="ui-button-danger" />
+        </div>
+
+        <!-- Panel de Estadísticas en tiempo real -->
+        <p:panelGrid columns="4" layout="grid" style="margin-bottom: 15px;">
+            <div class="stat-card">
+                <span style="font-size: 12px; color: #6b7280;">TOTAL SOLICITUDES</span><br/>
+                <strong style="font-size: 22px; color: #1e3a8a;">#{solicitudBean.listaSolicitudes.size()}</strong>
+            </div>
+            <div class="stat-card">
+                <span style="font-size: 12px; color: #6b7280;">PENDIENTES</span><br/>
+                <strong style="font-size: 22px; color: #d97706;">#{solicitudBean.totalPendientes}</strong>
+            </div>
+            <div class="stat-card">
+                <span style="font-size: 12px; color: #6b7280;">EN PROCESO</span><br/>
+                <strong style="font-size: 22px; color: #2563eb;">#{solicitudBean.totalEnProceso}</strong>
+            </div>
+            <div class="stat-card">
+                <span style="font-size: 12px; color: #6b7280;">ATENDIDAS / CERRADAS</span><br/>
+                <strong style="font-size: 22px; color: #059669;">#{solicitudBean.totalAtendidas}</strong>
+            </div>
+        </p:panelGrid>
+
+        <!-- Formulario de Registro de Nueva Solicitud -->
+        <p:panel header="Registrar Nueva Solicitud de Apoyo Comunitario" toggleable="true" style="margin-bottom: 20px;">
+            <h:panelGrid columns="4" cellpadding="6" style="width:100%;">
+                <p:outputLabel for="cmbSolicitante" value="Solicitante:" />
+                <p:selectOneMenu id="cmbSolicitante" value="#{solicitudBean.nuevaSolicitud.idSolicitante}" style="width:220px;">
+                    <f:selectItem itemLabel="-- Seleccione Solicitante --" itemValue="0" />
+                    <f:selectItems value="#{solicitudBean.listaSolicitantes}" var="solUser"
+                                   itemLabel="#{solUser.nombre}" itemValue="#{solUser.idUsuario}" />
+                </p:selectOneMenu>
+
+                <p:outputLabel for="cmbCategoria" value="Categoría de Apoyo:" />
+                <p:selectOneMenu id="cmbCategoria" value="#{solicitudBean.nuevaSolicitud.idCategoria}" style="width:220px;">
+                    <f:selectItem itemLabel="-- Seleccione Categoría --" itemValue="0" />
+                    <f:selectItems value="#{solicitudBean.listaCategorias}" var="cat"
+                                   itemLabel="#{cat.nombreCategoria}" itemValue="#{cat.idCategoria}" />
+                </p:selectOneMenu>
+
+                <p:outputLabel for="cmbOrg" value="Organización Aliada (Opcional):" />
+                <p:selectOneMenu id="cmbOrg" value="#{solicitudBean.nuevaSolicitud.idOrganizacion}" style="width:220px;">
+                    <f:selectItem itemLabel="-- Sin organización aún --" itemValue="0" />
+                    <f:selectItems value="#{solicitudBean.listaOrganizaciones}" var="org"
+                                   itemLabel="#{org.nombre}" itemValue="#{org.idOrganizacion}" />
+                </p:selectOneMenu>
+
+                <p:outputLabel for="cmbVolInit" value="Voluntario Inicial (Opcional):" />
+                <p:selectOneMenu id="cmbVolInit" value="#{solicitudBean.nuevaSolicitud.idVoluntario}" style="width:220px;">
+                    <f:selectItem itemLabel="-- Sin asignar --" itemValue="0" />
+                    <f:selectItems value="#{solicitudBean.listaVoluntarios}" var="vol"
+                                   itemLabel="#{vol.nombre}" itemValue="#{vol.idUsuario}" />
+                </p:selectOneMenu>
+            </h:panelGrid>
+
+            <h:panelGrid columns="2" cellpadding="6" style="width:100%; margin-top:5px;">
+                <p:outputLabel for="txtDescripcion" value="Descripción detallada de la necesidad:" />
+                <p:inputTextarea id="txtDescripcion" rows="2" cols="75"
+                                 value="#{solicitudBean.nuevaSolicitud.descripcion}"
+                                 placeholder="Describa el apoyo requerido..." />
+
+                <h:panelGroup />
+                <p:commandButton value="Guardar Solicitud" icon="pi pi-save"
+                                 actionListener="#{solicitudBean.guardarSolicitud()}"
+                                 update="mensajes formPrincipal" />
+            </h:panelGrid>
+        </p:panel>
+
+        <!-- Tabla de Consulta, Búsqueda, Cambio de Estado y Seguimiento -->
+        <p:panel header="Listado y Control de Solicitudes Comunitarias">
+            <p:dataTable id="tablaSolicitudes" var="item" value="#{solicitudBean.listaSolicitudes}"
+                         paginator="true" rows="6" emptyMessage="No se encontraron solicitudes registradas.">
+
+                <p:column headerText="ID" sortBy="#{item.idSolicitud}" style="width:45px; text-align:center;">
+                    <h:outputText value="#{item.idSolicitud}" />
+                </p:column>
+
+                <p:column headerText="Fecha" sortBy="#{item.fechaRegistro}" style="width:95px;">
+                    <h:outputText value="#{item.fechaRegistro}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Solicitante" filterBy="#{item.nombreSolicitante}" filterMatchMode="contains">
+                    <h:outputText value="#{item.nombreSolicitante}" />
+                </p:column>
+
+                <p:column headerText="Categoría" filterBy="#{item.nombreCategoria}" filterMatchMode="contains">
+                    <h:outputText value="#{item.nombreCategoria}" />
+                </p:column>
+
+                <p:column headerText="Descripción" filterBy="#{item.descripcion}" filterMatchMode="contains">
+                    <h:outputText value="#{item.descripcion}" />
+                </p:column>
+
+                <p:column headerText="Voluntario / Org." filterBy="#{item.nombreVoluntario}" filterMatchMode="contains">
+                    <h:outputText value="Vol: #{item.nombreVoluntario}" /><br/>
+                    <small style="color:#555;"><h:outputText value="Org: #{item.nombreOrganizacion}" /></small>
+                </p:column>
+
+                <p:column headerText="Estado" filterBy="#{item.estado}" filterMatchMode="contains" style="width:105px; text-align:center;">
+                    <h:outputText value="#{item.estado}" style="font-weight:bold;" />
+                </p:column>              
+                
+                <p:column headerText="Gestión y Bitácora" style="width:260px;">
+                    <p:commandButton value="Seguimiento" icon="pi pi-comments"
+                                     actionListener="#{solicitudBean.prepararSeguimiento(item)}"
+                                     oncomplete="PF('dlgSeguimiento').show();"
+                                     update=":dlgSeguimiento" style="margin-bottom:4px;" />
+                    
+                    
+                    <p:commandButton value="Editar" icon="pi pi-pencil" styleClass="ui-button-info"
+                                    rendered="#{loginBean.usuarioAutenticado.rol ne 'Solicitante'}"
+                                    actionListener="#{solicitudBean.prepararEdicion(item)}"
+                                    oncomplete="PF('dlgEditar').show();"
+                                    update=":dlgEditar" style="margin-bottom:4px; margin-left:4px;" />
+                    
+                    <!-- Solo el Administrador puede eliminar -->
+                    <p:commandButton value="Eliminar" icon="pi pi-trash" styleClass="ui-button-danger"
+                                     rendered="#{loginBean.usuarioAutenticado.rol eq 'Administrador'}"
+                                     actionListener="#{solicitudBean.eliminarSolicitud(item)}"
+                                     update=":formPrincipal:mensajes :formPrincipal"
+                                     style="margin-bottom:4px; margin-left:4px;">
+                        <p:confirm header="Confirmar Eliminación"
+                                   message="¿Está seguro que desea eliminar permanentemente la solicitud ##{item.idSolicitud}?"
+                                   icon="pi pi-exclamation-triangle" />
+                    </p:commandButton><br/>
+
+                    <!-- Solo Administrador y Voluntario pueden actualizar estados -->
+                    <h:panelGroup rendered="#{loginBean.usuarioAutenticado.rol ne 'Solicitante'}">
+                        <p:commandButton value="En proceso" styleClass="ui-button-warning"
+                                         actionListener="#{solicitudBean.cambiarEstado(item, 'En proceso')}"
+                                         update=":formPrincipal:mensajes :formPrincipal" />
+                        <p:commandButton value="Atendida" styleClass="ui-button-success"
+                                         actionListener="#{solicitudBean.cambiarEstado(item, 'Atendida')}"
+                                         update=":formPrincipal:mensajes :formPrincipal" />
+                        <p:commandButton value="Cerrar" styleClass="ui-button-secondary"
+                                         actionListener="#{solicitudBean.cambiarEstado(item, 'Cerrada')}"
+                                         update=":formPrincipal:mensajes :formPrincipal" />
+                    </h:panelGroup>
+                </p:column>
+                     
+            </p:dataTable>
+        </p:panel>
+    </h:form>
+    
+    <!-- Modal de Confirmación para Eliminar -->
+    <h:form id="formConfirmacion">
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" width="420">
+            <p:commandButton value="Sí, eliminar" type="button" 
+                             styleClass="ui-confirmdialog-yes ui-button-danger" icon="pi pi-check" />
+            <p:commandButton value="Cancelar" type="button" 
+                             styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times" />
+        </p:confirmDialog>
+    </h:form>
+
+    <!-- Diálogo Modal para Editar Solicitud -->
+    <p:dialog id="dlgEditar" header="Editar Solicitud ##{solicitudBean.solicitudSeleccionada.idSolicitud}"
+              widgetVar="dlgEditar" modal="true" width="580" resizable="false">
+        <h:form id="formEditar">
+            <h:panelGrid columns="2" cellpadding="6" style="width:100%;">
+                <p:outputLabel value="Solicitante:" />
+                <h:outputText value="#{solicitudBean.solicitudSeleccionada.nombreSolicitante}" style="font-weight:bold;" />
+
+                <p:outputLabel for="editCategoria" value="Categoría:" />
+                <p:selectOneMenu id="editCategoria" value="#{solicitudBean.solicitudSeleccionada.idCategoria}" style="width:260px;">
+                    <f:selectItem itemLabel="-- Seleccione Categoría --" itemValue="0" />
+                    <f:selectItems value="#{solicitudBean.listaCategorias}" var="cat"
+                                   itemLabel="#{cat.nombreCategoria}" itemValue="#{cat.idCategoria}" />
+                </p:selectOneMenu>
+
+                <p:outputLabel for="editOrg" value="Organización Aliada:" />
+                <p:selectOneMenu id="editOrg" value="#{solicitudBean.solicitudSeleccionada.idOrganizacion}" style="width:260px;">
+                    <f:selectItem itemLabel="-- Sin organización --" itemValue="0" />
+                    <f:selectItems value="#{solicitudBean.listaOrganizaciones}" var="org"
+                                   itemLabel="#{org.nombre}" itemValue="#{org.idOrganizacion}" />
+                </p:selectOneMenu>
+
+                <p:outputLabel for="editVol" value="Voluntario Asignado:" />
+                <p:selectOneMenu id="editVol" value="#{solicitudBean.solicitudSeleccionada.idVoluntario}" style="width:260px;">
+                    <f:selectItem itemLabel="-- Sin asignar --" itemValue="0" />
+                    <f:selectItems value="#{solicitudBean.listaVoluntarios}" var="vol"
+                                   itemLabel="#{vol.nombre}" itemValue="#{vol.idUsuario}" />
+                </p:selectOneMenu>
+
+                <p:outputLabel for="editEstado" value="Estado:" />
+                <p:selectOneMenu id="editEstado" value="#{solicitudBean.solicitudSeleccionada.estado}" style="width:260px;">
+                    <f:selectItem itemLabel="Pendiente" itemValue="Pendiente" />
+                    <f:selectItem itemLabel="En proceso" itemValue="En proceso" />
+                    <f:selectItem itemLabel="Atendida" itemValue="Atendida" />
+                    <f:selectItem itemLabel="Cerrada" itemValue="Cerrada" />
+                </p:selectOneMenu>
+
+                <p:outputLabel for="editDesc" value="Descripción:" />
+                <p:inputTextarea id="editDesc" rows="3" cols="42"
+                                 value="#{solicitudBean.solicitudSeleccionada.descripcion}" />
+
+                <h:panelGroup />
+                <h:panelGroup>
+                    <p:commandButton value="Guardar Cambios" icon="pi pi-save"
+                                     actionListener="#{solicitudBean.actualizarSolicitud()}"
+                                     update=":formPrincipal:mensajes :formPrincipal" />
+                    <p:commandButton value="Cancelar" icon="pi pi-times" type="button"
+                                     onclick="PF('dlgEditar').hide();"
+                                     styleClass="ui-button-secondary" style="margin-left:6px;" />
+                </h:panelGroup>
+            </h:panelGrid>
+        </h:form>
+    </p:dialog>
+    
+    
+    <!-- Diálogo Modal para Asignar Voluntario y Registrar Bitácora de Seguimiento -->
+    <p:dialog id="dlgSeguimiento" header="Bitácora de Seguimiento y Asignación - Solicitud ##{solicitudBean.solicitudSeleccionada.idSolicitud}"
+              widgetVar="dlgSeguimiento" modal="true" width="650" resizable="false">
+        <h:form id="formSeguimiento">
+            <p:panel header="Asignar Voluntario Responsable" style="margin-bottom:10px;">
+                <h:panelGrid columns="3" cellpadding="5">
+                    <p:outputLabel value="Voluntario:" />
+                    <p:selectOneMenu value="#{solicitudBean.idVoluntarioAsignar}" style="width:240px;">
+                        <f:selectItem itemLabel="-- Seleccione Voluntario --" itemValue="0" />
+                        <f:selectItems value="#{solicitudBean.listaVoluntarios}" var="v"
+                                       itemLabel="#{v.nombre}" itemValue="#{v.idUsuario}" />
+                    </p:selectOneMenu>
+                    <p:commandButton value="Asignar" icon="pi pi-check"
+                                     actionListener="#{solicitudBean.asignarVoluntario()}"
+                                     update=":formPrincipal:mensajes :formPrincipal" />
+                </h:panelGrid>
+            </p:panel>
+
+            <p:panel header="Registrar Nuevo Avance en Bitácora" style="margin-bottom:10px;">
+                <h:panelGrid columns="2" cellpadding="5" style="width:100%;">
+                    <p:outputLabel value="Comentario:" />
+                    <p:inputTextarea rows="2" cols="50" value="#{solicitudBean.nuevoSeguimiento.comentario}" />
+                    <h:panelGroup />
+                    <p:commandButton value="Agregar Seguimiento" icon="pi pi-plus"
+                                     actionListener="#{solicitudBean.guardarSeguimiento()}"
+                                     update=":formPrincipal:mensajes formSeguimiento" />
+                </h:panelGrid>
+            </p:panel>
+
+            <p:dataTable var="seg" value="#{solicitudBean.historialSeguimiento}"
+                         emptyMessage="Aún no hay registros de seguimiento para esta solicitud."
+                         scrollable="true" scrollHeight="140">
+                <p:column headerText="Fecha" style="width:95px;">
+                    <h:outputText value="#{seg.fecha}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Detalle del Seguimiento">
+                    <h:outputText value="#{seg.comentario}" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </p:dialog>
+</h:body>
+</html>

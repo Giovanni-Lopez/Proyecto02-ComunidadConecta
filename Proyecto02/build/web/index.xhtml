@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Comunidad Conecta - Inicio de Sesión</title>
+    <style type="text/css">
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 30px; }
+        .contenedor { max-width: 900px; margin: auto; }
+        .header-box { background: #1e3a8a; color: white; padding: 20px; border-radius: 6px; margin-bottom: 20px; }
+    </style>
+</h:head>
+<h:body>
+    <div class="contenedor">
+        <div class="header-box">
+            <h2 style="margin:0;">Comunidad Conecta</h2>
+            <p style="margin:5px 0 0 0;">Plataforma Web para la Gestión de Necesidades y Apoyos Comunitarios</p>
+        </div>
+
+        <h:form id="formAcceso">
+            <p:growl id="msgLogin" showDetail="true" life="4500" />
+
+            <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                <!-- Panel de Inicio de Sesión -->
+                <p:panel header="Iniciar Sesión">
+                    <h:panelGrid columns="1" cellpadding="6" style="width:100%;">
+                        <p:outputLabel for="txtCorreo" value="Correo Electrónico:" />
+                        <p:inputText id="txtCorreo" value="#{loginBean.correo}" style="width:95%;"
+                                     placeholder="ej. admin@comunidad.sv" />
+
+                        <p:outputLabel for="txtPass" value="Contraseña:" />
+                        <p:password id="txtPass" value="#{loginBean.contrasena}" style="width:95%;" />
+
+                        <p:commandButton value="Ingresar al Sistema" icon="pi pi-sign-in"
+                                         action="#{loginBean.autenticar()}" update="msgLogin"
+                                         style="margin-top:10px; width:100%;" />
+                    </h:panelGrid>
+                    <p style="font-size: 12px; color: #555; margin-top: 12px;">
+                        <b>Usuarios de prueba:</b><br/>
+                        Admin: admin@comunidad.sv / 12345<br/>
+                        Voluntario: jose.vol@comunidad.sv / 12345<br/>
+                        Solicitante: juan.sol@correo.sv / 12345
+                    </p>
+                </p:panel>
+
+                <!-- Panel de Registro de Nuevo Usuario -->
+                <p:panel header="Crear Nueva Cuenta">
+                    <h:panelGrid columns="2" cellpadding="5" style="width:100%;">
+                        <p:outputLabel for="regNombre" value="Nombre Completo:" />
+                        <p:inputText id="regNombre" value="#{loginBean.regNombre}" />
+
+                        <p:outputLabel for="regCorreo" value="Correo:" />
+                        <p:inputText id="regCorreo" value="#{loginBean.regCorreo}" />
+
+                        <p:outputLabel for="regPass" value="Contraseña:" />
+                        <p:password id="regPass" value="#{loginBean.regContrasena}" />
+
+                        <p:outputLabel for="regTel" value="Teléfono:" />
+                        <p:inputText id="regTel" value="#{loginBean.regTelefono}" placeholder="7000-0000" />
+
+                        <p:outputLabel for="regRol" value="Rol:" />
+                        <p:selectOneMenu id="regRol" value="#{loginBean.regRol}">
+                            <f:selectItem itemLabel="Solicitante" itemValue="Solicitante" />
+                            <f:selectItem itemLabel="Voluntario" itemValue="Voluntario" />
+                            <f:selectItem itemLabel="Administrador" itemValue="Administrador" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel for="regExtra" value="Dirección / Horario:" />
+                        <p:inputText id="regExtra" value="#{loginBean.regExtra}" />
+
+                        <h:panelGroup />
+                        <p:commandButton value="Registrar Usuario" icon="pi pi-user-plus"
+                                         actionListener="#{loginBean.registrarNuevoUsuario()}"
+                                         update="msgLogin formAcceso" styleClass="ui-button-success" />
+                    </h:panelGrid>
+                </p:panel>
+            </p:panelGrid>
+        </h:form>
+    </div>
+</h:body>
+</html>

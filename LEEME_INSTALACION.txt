@@ -1,0 +1,29 @@
+================================================================================
+GUÍA RÁPIDA DE APERTURA EN NETBEANS 8.2 - PROYECTO02 (COMUNIDAD CONECTA)
+================================================================================
+
+1. BASE DE DATOS (SQL Server 2017 Express):
+   - Abra SQL Server Management Studio (SSMS).
+   - Ejecute el archivo 'BD_ComunidadConecta.sql' incluido en esta carpeta.
+   - Asegúrese de que el protocolo TCP/IP esté habilitado en SQL Server
+     Configuration Manager (puerto 1433) y que el usuario 'sa' tenga clave.
+   - Si su clave de SQL Server es distinta de '123', actualícela en:
+     src/java/com/comunidadconecta/dao/Conexion.java
+
+2. ABRIR PROYECTO EN NETBEANS 8.2:
+   - Descomprima este archivo ZIP.
+   - En NetBeans 8.2 vaya a: File -> Open Project...
+   - Seleccione la carpeta interna 'Proyecto02' (la que tiene el ícono de taza web).
+   - Si NetBeans solicita resolver referencias ('Resolve Missing Server' o librerías):
+     a) Asigne 'GlassFish Server 4.1' como servidor.
+     b) En clic derecho sobre el proyecto -> Properties -> Libraries -> Add JAR/Folder,
+        agregue 'primefaces-8.0.jar' y 'mssql-jdbc-7.2.2.jre8'.
+
+3. CREDENCIALES DE PRUEBA (Ya cargadas en la base de datos):
+   - Administrador: admin@comunidad.sv   | Clave: 12345
+   - Voluntario:    jose.vol@comunidad.sv | Clave: 12345
+   - Solicitante:   juan.sol@correo.sv   | Clave: 12345
+
+4. EJECUCIÓN:
+   - Clic derecho sobre 'Proyecto02' -> Clean and Build -> Run.
+================================================================================
