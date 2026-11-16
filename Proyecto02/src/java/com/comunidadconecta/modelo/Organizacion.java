@@ -4,7 +4,10 @@ import java.io.Serializable;
 
 /**
  * Clase entidad que representa a las organizaciones aliadas que brindan recursos.
- * Autor: Grupo 02 - PRN315 (UES)
+ * Autores: 
+ * Alexis Giovanni Angel Lopez - AL23036 
+ * Juan Diego Chicas - CC23118
+ * Grupo 02 - PRN315 (UES)
  * Fecha: Noviembre 2026
  */
 public class Organizacion implements Serializable {

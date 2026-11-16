@@ -2,7 +2,10 @@ package com.comunidadconecta.modelo;
 
 /**
  * Subclase que representa al administrador general de la plataforma.
- * Autor: Grupo 02 - PRN315 (UES)
+ * Autores: 
+ * Alexis Giovanni Angel Lopez - AL23036 
+ * Juan Diego Chicas - CC23118
+ * Grupo 02 - PRN315 (UES)
  * Fecha: Noviembre 2026
  */
 public class Administrador extends Usuario {

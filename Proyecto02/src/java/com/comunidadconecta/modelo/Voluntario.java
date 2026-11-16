@@ -2,7 +2,10 @@ package com.comunidadconecta.modelo;
 
 /**
  * Subclase que representa al voluntario encargado de atender solicitudes.
- * Autor: Grupo 02 - PRN315 (UES)
+* Autores: 
+ * Alexis Giovanni Angel Lopez - AL23036 
+ * Juan Diego Chicas - CC23118
+ * Grupo 02 - PRN315 (UES)
  * Fecha: Noviembre 2026
  */
 public class Voluntario extends Usuario {

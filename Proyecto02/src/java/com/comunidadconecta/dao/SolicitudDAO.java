@@ -12,7 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Autor: al23036 Grupo 02 - PRN315 (UES)
+ * Autores: 
+ * Alexis Giovanni Angel Lopez - AL23036 
+ * Juan Diego Chicas - CC23118
+ * Grupo 02 - PRN315 (UES)
  * Fecha: Noviembre 2026
  */
 

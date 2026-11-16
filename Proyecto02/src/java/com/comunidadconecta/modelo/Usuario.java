@@ -4,7 +4,10 @@ import java.io.Serializable;
 
 /**
  * Clase abstracta base que modela a los usuarios del sistema según el diagrama UML.
- * Autor: Grupo 02 - PRN315 (UES)
+ * Autores: 
+ * Alexis Giovanni Angel Lopez - AL23036 
+ * Juan Diego Chicas - CC23118
+ * Grupo 02 - PRN315 (UES)
  * Fecha: Noviembre 2026
  */
 public abstract class Usuario implements Serializable {

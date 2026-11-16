@@ -18,7 +18,10 @@ import javax.faces.context.FacesContext;
 import org.primefaces.PrimeFaces;
 
 /**
- * Autor: al23036 Grupo 02 - PRN315 (UES)
+ * Autores: 
+ * Alexis Giovanni Angel Lopez - AL23036 
+ * Juan Diego Chicas - CC23118
+ * Grupo 02 - PRN315 (UES)
  * Fecha: Noviembre 2026
  */
 

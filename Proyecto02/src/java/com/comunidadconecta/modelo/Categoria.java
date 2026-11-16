@@ -4,7 +4,10 @@ import java.io.Serializable;
 
 /**
  * Clase entidad que clasifica el tipo de apoyo comunitario.
- * Autor: Grupo 02 - PRN315 (UES)
+* Autores: 
+ * Alexis Giovanni Angel Lopez - AL23036 
+ * Juan Diego Chicas - CC23118
+ * Grupo 02 - PRN315 (UES)
  * Fecha: Noviembre 2026
  */
 public class Categoria implements Serializable {

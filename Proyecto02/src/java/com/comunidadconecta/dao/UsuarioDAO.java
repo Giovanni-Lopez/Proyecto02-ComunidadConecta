@@ -12,9 +12,13 @@ import java.util.List;
 
 /**
  * DAO para autenticación, registrAutor: al23036 Grupo 02 - PRN315 (UES)
- * Autor: Grupo 02 - PRN315 (UES)
+ * Autores: 
+ * Alexis Giovanni Angel Lopez - AL23036 
+ * Juan Diego Chicas - CC23118
+ * Grupo 02 - PRN315 (UES)
  * Fecha: Noviembre 2026
  */
+
 public class UsuarioDAO {
 
     /**
